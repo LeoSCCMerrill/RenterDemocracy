@@ -14,7 +14,12 @@ namespace RenterDemocracy.Models
         public decimal Levels { get; set; }
         public decimal FloorSize { get; set; }
         public Owner Owner { get; set; } = new Owner();
-        public IList<UnitParking> Parking { get; set; } = new List<UnitParking>();
+        public int CoveredDriveway { get; set; } = 0;
+        public int UncoveredDriveway {get;set;} =0;
+        public int CoveredLot { get; set; } = 0;
+        public int UncoveredLot { get; set; } = 0;
+        public int Garage { get; set; } = 0;
+        public int Street { get; set; } = 0;
 
         public virtual string getFullAddress()
         {

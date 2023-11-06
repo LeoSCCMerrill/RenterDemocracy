@@ -1,5 +1,39 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
-@{
+@model UnitViewModel
+
+<h1>Manage Properties Below</h1>
+<h2>Houses:</h2>
+    @foreach(House house in Model.Houses)
+    {
+        <div>@house.Address</div>
+        <div>@house.Zip</div>
+        <div>@house.City</div>
+        <div>@house.State</div>
+        <div>@house.getCombinedSize()</div>
+        <form method="get" asp-action="HouseDetails" asp-controller="Owner" asp-route-houseId="@house.Id">
+            <button type="submit" class="btn btn-link">Details</button>
+        </form>
+    }
+<form method="get" asp-action="AddHouse" asp-controller="Owner">
+    <button type="submit" class="btn btn-primary">Add House</button>
+</form>
+<h2>Apartments:</h2>
+@foreach(String address in Model.Apartments.Keys)
+{
+    <h3>@address</h3>
+    @foreach (Apartment apartment in Model.Apartments[address])
+    {
+        <div>@apartment.RoomNumber</div>
+        <div>@apartment.FloorSize</div>
+        <form method="get" asp-action="ApartmentDetails" asp-controller="Owner" asp-route-apartmentId="@apartment.Id">
+            <button type="submit" class="btn btn-link">Details</button>
+        </form>
+    }
 }
+<form method="get" asp-action="AddApartment" asp-controller="Owner">
+    <button type="submit" class="btn btn-primary">Add Apartment</button>
+</form>
+
+

@@ -3,6 +3,7 @@
     public class Owner
     {
         public Guid Id { get; set; }
+        public Guid UserId { get; set; }
         public string? CompanyName { private get; set; }
         public User PrimaryContact { get; set; } = new User();
         public User PropertyManager { get; set;} = new User();
