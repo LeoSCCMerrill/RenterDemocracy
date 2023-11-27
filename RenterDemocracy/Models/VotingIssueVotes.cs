@@ -2,9 +2,9 @@
 {
     public class VotingIssueVotes
     {
-        public Guid Id { get; set; }
-        public Guid PostId { get; set; }
-        public Guid UserId { get; set; }
+        public string Id { get; set; } = string.Empty;
+        public string PostId { get; set; } = string.Empty;
+        public string UserId { get; set; } = string.Empty;
         public Votes Vote { get; set; }
     }
 }

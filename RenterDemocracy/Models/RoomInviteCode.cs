@@ -2,8 +2,7 @@
 {
     public class RoomInviteCode
     {
-        public Guid Id { get; set; }
-        public User User { get; set; }
-        public Unit Unit { get; set; }
+        public string Id { get; set; } = string.Empty;
+        public Unit Unit { get; set; } = new Unit();
     }
 }

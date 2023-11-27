@@ -4,7 +4,7 @@ namespace RenterDemocracy.Models
 {
     public class Unit
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; } = string.Empty;
         public string Address { get; set; } = string.Empty;
         public string Zip { get; set; } = string.Empty;
         public string City { get; set; } = string.Empty;
@@ -20,6 +20,8 @@ namespace RenterDemocracy.Models
         public int UncoveredLot { get; set; } = 0;
         public int Garage { get; set; } = 0;
         public int Street { get; set; } = 0;
+        public IList<UserUnit>? UserUnits { get; set; }
+        public IList<User>? Users { get; set; }
 
         public virtual string getFullAddress()
         {

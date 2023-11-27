@@ -2,6 +2,6 @@
 {
     public class DirectMessage : Post
     {
-        public User ToUser { get; set; } = new User();
+        public User? ToUser { get; set; }
     }
 }

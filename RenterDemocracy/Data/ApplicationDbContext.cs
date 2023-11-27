@@ -12,6 +12,7 @@ namespace RenterDemocracy.Data
             : base(options)
         {
         }
+        public DbSet<User> ApplicationUsers { get; set; }
         public DbSet<Apartment> Apartments { get; set; }
         public DbSet<House> Houses { get; set; }
         public DbSet<Owner> Owners { get; set; }
@@ -22,11 +23,19 @@ namespace RenterDemocracy.Data
         public DbSet<UserUnit> UserUnits { get; set; }
         public DbSet<UnitParking> UnitParkings { get; set; }
         public DbSet<VotingIssueVotes> VotingIssuesVotes { get; set; }
+        public DbSet<Comment> Comments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
             builder.Entity<UserUnit>().HasKey(uu => new {uu.UnitId, uu.UserId});
+            builder.Entity<UserUnit>().HasOne(uu => uu.Unit).WithMany(u => u.UserUnits).OnDelete(DeleteBehavior.Restrict);
+            builder.Entity<User>().HasKey(x => x.Id);
+            builder.Entity<DirectMessage>().HasOne(dm => dm.ToUser).WithMany(u =>  u.DirectMessagesReceived).OnDelete(DeleteBehavior.Restrict);
+            builder.Entity<User>()
+                .HasMany(u => u.Units)
+                .WithMany(u => u.Users)
+                .UsingEntity<UserUnit>();
             const string OWNER_ID = "5cb99a62-bceb-4b4a-98d7-b250d8d7ae11";
             const string PROP_MAN_ID = "8acb6e32-4bff-407f-9842-b477c54ecfed";
             const string ADMIN_ID = "dc4ba651-0a2e-4d5b-8ae0-9f37fed328b6";

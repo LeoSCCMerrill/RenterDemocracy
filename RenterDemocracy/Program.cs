@@ -15,6 +15,22 @@ builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfi
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddDistributedMemoryCache();
+
+builder.Services.AddRazorPages()
+                    .AddSessionStateTempDataProvider();  //Might Delete Later IDK
+
+builder.Services.AddControllersWithViews()
+                    .AddSessionStateTempDataProvider(); //Might Delete Later IDK
+
+builder.Services.AddSession(options =>
+{
+    //options.IdleTimeout = TimeSpan.FromSeconds(30); // Default time is 20mins I think
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -33,6 +49,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseSession(); // Also Apart of the sessions
 
 app.UseAuthentication();
 app.UseAuthorization();

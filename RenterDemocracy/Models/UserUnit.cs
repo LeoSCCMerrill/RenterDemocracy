@@ -5,9 +5,9 @@ namespace RenterDemocracy.Models
 {
     public class UserUnit
     {
-        public Guid UserId { get; set; }
+        public string UserId { get; set; } = string.Empty;
         public User User { get; set; } = new User();
-        public Guid UnitId { get; set; }
+        public string UnitId { get; set; } = string.Empty;
         public Unit Unit { get; set; } = new Unit();
         public IdentityRole Role { get; set; } = new IdentityRole();
     }
