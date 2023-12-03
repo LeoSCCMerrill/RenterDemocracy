@@ -1,36 +1,135 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
-@model UnitViewModel
-
-<h1>Manage Properties Below</h1>
-<h2>Houses:</h2>
-    @foreach(House house in Model.Houses)
+@model IList<Unit>
+@{
+    IDictionary<string, IList<Unit>> buildings = new Dictionary<string, IList<Unit>>();
+    IList<Unit> houses = new List<Unit>();
+    @foreach (Unit house in Model)
     {
-        <div>@house.Address</div>
-        <div>@house.Zip</div>
-        <div>@house.City</div>
-        <div>@house.State</div>
-        <div>@house.getCombinedSize()</div>
-        <form method="get" asp-action="HouseDetails" asp-controller="Owner" asp-route-houseId="@house.Id">
-            <button type="submit" class="btn btn-link">Details</button>
-        </form>
+        @if (house.UnitType == UnitType.HOUSE)
+        {
+            houses.Add(house);
+        }
     }
+    @foreach (Unit apartment in Model)
+    {
+        @if (apartment.UnitType == UnitType.APARTMENT)
+        {
+            if (buildings.ContainsKey(apartment.Address))
+            {
+                buildings[apartment.Address].Add(apartment);
+            }
+            else
+            {
+                buildings.Add(apartment.Address, new List<Unit>() { apartment });
+            }
+        }
+
+    }
+    int count = 1;
+}
+<h1>Manage Properties Below</h1>
+@if (houses.Count > 0)
+{
+    <div>
+        <h3>Houses:</h3>
+
+        @foreach (Unit house in houses)
+        {
+
+            <table>
+                <tr><th>House @count of @houses.Count</th></tr>
+                <tr><td>Full Address: @house.GetFullAddress()</td></tr>
+                <tr><td>@house.GetBedBath()</td></tr>
+                <tr>
+                    <td>
+                        @if (house.Users.Count > 0)
+                        {
+                            <table>
+                                <thead><tr><th>Tenant Email</th><th>Tenant Name</th><th>Delete</th></tr></thead>
+                                <tbody>
+                                    @foreach (User tenant in house.Users)
+                                    {
+                                        <tr><td>@tenant.Email</td><td>@tenant.GetFullName()</td><td><button class="btn btn-warning" asp-action="DeleteTenant" asp-route-tenantId="@tenant.Id" asp-route-unitId="@house.Id">Delete</button></td></tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                        else
+                        {
+                            <span>No tenants added! Do so below</span>
+                        }
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <a asp-action="EditHouse" asp-route-id="@house.Id">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@house.Id">Delete</a>
+                        <a asp-action="AddTenant" asp-route-id="@house.Id">Add Tenant</a>
+                    </td>
+                </tr>
+            </table>
+        }
+    </div>
+}
+else
+{
+    <h2>You don't have any houses yet, add one below:</h2>
+}
 <form method="get" asp-action="AddHouse" asp-controller="Owner">
     <button type="submit" class="btn btn-primary">Add House</button>
 </form>
-<h2>Apartments:</h2>
-@foreach(String address in Model.Apartments.Keys)
+
+@if (buildings.Count > 0)
 {
-    <h3>@address</h3>
-    @foreach (Apartment apartment in Model.Apartments[address])
+    int buildingCount = 1;
+    <h2>Apartments:</h2>
+    @foreach (KeyValuePair<string, IList<Unit>> building in buildings)
     {
-        <div>@apartment.RoomNumber</div>
-        <div>@apartment.FloorSize</div>
-        <form method="get" asp-action="ApartmentDetails" asp-controller="Owner" asp-route-apartmentId="@apartment.Id">
-            <button type="submit" class="btn btn-link">Details</button>
-        </form>
+        count = 1;
+        <h3>Building @buildingCount of @buildings.Count</h3>
+        <div>Full Address: @building.Value[0].GetFullAddress()</div>
+        @foreach (Unit apartment in building.Value)
+        {
+            <table>
+                <tr><th>Unit @count of @building.Value.Count</th></tr>
+                <tr><td>@apartment.GetBedBath()</td></tr>
+                <tr>
+                    <td>
+                        @if (apartment.Users.Count > 0)
+                        {
+                            <table>
+                                <thead><tr><th>Tenant Email</th><th>Tenant Name</th><th>Delete</th></tr></thead>
+                                <tbody>
+                                    @foreach (User tenant in apartment.Users)
+                                    {
+                                        <tr><td>@tenant.Email</td><td>@tenant.GetFullName()</td><td><a class="btn btn-danger" asp-action="DeleteTenant" asp-route-tenantId="@tenant.Id" asp-route-unitId="@apartment.Id">Delete</a></td></tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                        else
+                        {
+                            <span>No tenants added! Do so below</span>
+                        }
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <a asp-action="EditApartment" asp-route-id="@apartment.Id">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@apartment.Id">Delete</a>
+                        <a asp-action="AddTenant" asp-route-id="@apartment.Id">Add Tenant</a>
+                    </td>
+                </tr>
+            </table>
+        }
+
     }
+}
+else
+{
+    <h2>You don't have any apartments yet, add one below:</h2>
 }
 <form method="get" asp-action="AddApartment" asp-controller="Owner">
     <button type="submit" class="btn btn-primary">Add Apartment</button>

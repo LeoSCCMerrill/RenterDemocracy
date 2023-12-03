@@ -2,6 +2,6 @@
 {
     public enum Votes
     {
-        YAY, NAY, PRESENT, ABSENT, ABSTAIN
+        YAY, NAY, PRESENT, ABSENT, ABSTAIN, NOT_VOTING
     }
 }

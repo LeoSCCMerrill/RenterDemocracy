@@ -1,0 +1,69 @@
+﻿@using Microsoft.AspNetCore.Identity
+@model UserViewModel
+@{
+    ViewData["Title"] = " | Manage Accounts";
+}
+
+<h1 class="mb-2">Manage Accounts</h1>
+
+<h2>Admins</h2>
+<h5 class="mt-2"><a class="btn btn-primary" asp-action="CreateAdmin">Add an Admin</a></h5>
+<table class="table table-bordered table-striped table-sm">
+    <thead>
+        <tr><th>Email</th><th>Delete</th></tr>
+    </thead>
+    <tbody>
+        @if (Model.Users.Count() != 0)
+        {
+            @foreach (User user in Model.Users)
+            {
+                if (user.RoleNames.Contains(RolesEnum.ADMINISTRATOR.ToString()))
+                {
+                    <tr>
+                        <td>@user.Email</td>
+                        <td>
+                            <form method="post" asp-action="Delete" asp-route-id="@user.Id">
+                                <button type="submit" class="btn btn-danger">Delete Admin</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            }
+        }
+        else
+        {
+            <tr><td>There are no Admin accounts</td></tr>
+        }
+    </tbody>
+</table>
+
+<h2>Owners</h2>
+<h5 class="mt-2"><a class="btn btn-primary" asp-action="CreateOwner">Add an Owner</a></h5>
+<table class="table table-bordered table-striped table-sm">
+    <thead>
+        <tr><th>Email</th><th>Delete</th></tr>
+    </thead>
+    <tbody>
+        @if (Model.Users.Count() != 0)
+        {
+            @foreach (User user in Model.Users)
+            {
+                if (user.RoleNames.Contains(RolesEnum.OWNER.ToString()))
+                {
+                    <tr>
+                        <td>@user.Email</td>
+                        <td>
+                            <form method="post" asp-action="Delete" asp-route-id="@user.Id">
+                                <button type="submit" class="btn btn-danger">Delete Owner</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            }
+        }
+        else
+        {
+            <tr><td>There are no Employee accounts</td></tr>
+        }
+    </tbody>
+</table>

@@ -1,15 +1,15 @@
-﻿@model string
+﻿@model RenterDemocracy.Models.Unit
 
 @{
-    ViewData["Title"] = "Invite new tenant to your unit";
+    ViewData["Title"] = "Invite Tenant to your Unit";
 }
 
-<h1>Add Tenant To Unit</h1>
+<h1>Invite Tenant To Unit</h1>
 
 <h4>Tenant</h4>
 <hr />
 <form method="post" asp-action="AddTenant">
-    <input type="hidden" value="@Model" name="unitId" />
+    <input type="hidden" value="@Model.Id" name="unitId" />
     <div class="form-group row">
         <div class="col-sm-2"><label for="email">User Email:</label></div>
         <div class="col-sm-4">
@@ -17,7 +17,7 @@
         </div>
     </div>
     <div class="form-group row">
-        <div class="col-sm-2"><button type="submit" class="btn btn-primary" onclick="alert('User will only see this after creating an account!');">Invite User to Unit</button></div>
+        <div class="col-sm-2"><button type="submit" class="btn btn-primary" onclick="alert('The User will only see this after creating an account!');">Invite User to Unit</button></div>
     </div>
 </form>
 

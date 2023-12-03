@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RenterDemocracy.Data;
 using RenterDemocracy.Models;
+using RenterDemocracy.Util;
 using System.Security.Claims;
 
 namespace RenterDemocracy.Controllers
@@ -20,10 +21,46 @@ namespace RenterDemocracy.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            User currentUser = await _userManager.FindByIdAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            IList<UserUnit> userUnits = _context.UserUnits.Include(uu => uu.Unit).Where(uu => uu.UserId == currentUser.Id).ToList();
-            userUnits.Concat(_context.UserUnits.Include(uu => uu.Unit).Where(uu => uu.UserId == currentUser.Id).ToList());
-            return View();
+            User user = await _userManager.FindByIdAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            Unit? unit = _context.Units.Include(u=>u.UserUnits).ThenInclude(uu=>uu.User).Where(u=>u.Users.Contains(user)).FirstOrDefault();
+            if (unit == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            else
+            {
+                return View(unit);
+            }
+        }
+
+        public async Task<IActionResult> LeaveUnit()
+        {
+            User user = await _userManager.FindByIdAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            Unit? unit = _context.Units.Include(u => u.UserUnits).ThenInclude(uu => uu.User).Where(u => u.Users.Contains(user)).FirstOrDefault();
+            if (unit == null || user == null)
+            {
+                return RedirectToAction("Index");
+            }
+            UnitUtil.RemoveTenantFromUnit(user, unit, _userManager);
+            return RedirectToAction("Index", "Home");
+        }
+
+        [HttpGet]
+        public IActionResult AddTenant(string unitId)
+        {
+            return View(unitId);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddTenant(string unitId, string email)
+        {
+            User? user = await _userManager.FindByIdAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            if (user == null)
+            {
+                return RedirectToAction("Index");
+            }
+            UnitUtil.AddTenantToUnit(email, unitId, _context, user);
+            return RedirectToAction("Index");
         }
     }
 }

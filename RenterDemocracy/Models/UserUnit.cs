@@ -6,9 +6,8 @@ namespace RenterDemocracy.Models
     public class UserUnit
     {
         public string UserId { get; set; } = string.Empty;
-        public User User { get; set; } = new User();
+        public User? User { get; set; }
         public string UnitId { get; set; } = string.Empty;
-        public Unit Unit { get; set; } = new Unit();
-        public IdentityRole Role { get; set; } = new IdentityRole();
+        public Unit? Unit { get; set; }
     }
 }

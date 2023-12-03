@@ -1,1 +1,55 @@
-﻿@model KeyValuePair<Unit, IList<Post>>
+﻿@model IList<Post>
+@using System.Security.Claims
+<table>
+    <tr><th class="fs-5">Posts</th></tr>
+    <tr><td>Create new post:</td></tr>
+    <tr><td><form asp-action="CreatePost"><input type="text" name="title" placeholder="Post Title" /><br /><textarea rows="5" cols="50" name="content" placeholder="Post Content..."></textarea><br /><button class="btn btn-primary">Post!</button></form></td></tr>
+</table>
+<hr />
+
+<table style="background-color: white; width: 85%;" class="mx-auto">
+    @foreach (Post post in Model)
+    {
+        <tr>
+            <td>
+                <table class="table w-100">
+                    <caption>Authored by: @post.User.Email on @post.Time.ToString()</caption>
+                    <tr>
+                        <th>
+                            @post.Title
+                            @if (post.User.Id == User.FindFirstValue(ClaimTypes.NameIdentifier))
+                            {
+                                <form class="d-inline float-end" asp-action="DeletePost" asp-route-id="@post.Id"><button class="btn btn-close" /></form>
+                            }
+                        </th>
+                    </tr>
+                    <tr><td style="font-size: 1.5rem"><p>@post.Content</p></td></tr>
+                    <tr><td><br /><form asp-action="ReplyToPost"><input type="hidden" value="@post.Id" name="postId" /><textarea cols="50" rows="1" name="content" placeholder="Comment content..."></textarea><br /><button class="btn btn-primary">Reply to Post</button></form></td></tr>
+                    <tr><td>Comments:</td></tr>
+                    @foreach (Comment comment in post.Comments)
+                    {
+                        <tr>
+                            <td>
+                                <table style="width: 95%; margin: 0 10px;">
+                                    <caption class="border-bottom">@comment.Time.ToString()</caption>
+                                    <tr>
+                                        <th>
+                                            @comment.User.Email:
+                                            @if (comment.User.Id == User.FindFirstValue(ClaimTypes.NameIdentifier))
+                                            {
+                                                <form class="d-inline float-end" asp-action="DeleteComment" asp-route-id="@comment.Id"><button class="btn btn-close" /></form>
+                                            }
+                                        </th>
+                                    </tr>
+                                    <tr><td>@comment.Content</td></tr>
+                                </table>
+                            </td>
+                        </tr>
+                    }
+                    <tr></tr>
+                </table>
+            </td>
+        </tr>
+    }
+</table>
+

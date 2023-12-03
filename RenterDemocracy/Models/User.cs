@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RenterDemocracy.Models
 {
@@ -8,16 +9,18 @@ namespace RenterDemocracy.Models
         public string MiddleName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
         public DateTime? BirthDate { get; set; }
-        public IList<IdentityRole>? Roles { get; set; }
-        public IList<UserUnit>? UserUnits { get; set; }
-        public IList<Post>? PostsAuthored { get; set; }
-        public IList<DirectMessage>? DirectMessagesAuthored { get; set; }
-        public IList<DirectMessage>? DirectMessagesReceived { get; set; }
-        public IList<Unit>? Units { get; set; }
+        [NotMapped]
+        public IList<string> RoleNames { get; set; } = new List<string>();
+        public IList<UserUnit> UserUnits { get; set; } = new List<UserUnit>();
+        public IList<Unit> OwnedUnits { get; set; } = new List<Unit>();
+        public IList<Post> PostsAuthored { get; set; } = new List<Post>();
+        public IList<Unit> Units { get; set; } = new List<Unit>();
+        public IList<VotingIssueVotes> VotingIssueVotes { get; set; }
+        public IList<VotingIssue> VotingIssues { get; set; }
 
         public User() { }
 
-        public int getAge()
+        public int GetAge()
         {
             if (BirthDate == null)
             {
@@ -27,9 +30,9 @@ namespace RenterDemocracy.Models
             return (int)ts.TotalDays / 365;
         }
 
-        public string getFullName()
+        public string GetFullName()
         {
-            return "{First Name} {MiddleName} {LastName}";
+            return $"{FirstName} {MiddleName} {LastName}";
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿@model RenterDemocracy.Models.House
+﻿@model RenterDemocracy.Models.Unit
 
 @{
     ViewData["Title"] = "AddHouse";
@@ -12,21 +12,6 @@
     <div class="col-md-4">
         <form asp-action="AddHouse">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="BasementSize" class="control-label"></label>
-                <input asp-for="BasementSize" class="form-control" />
-                <span asp-validation-for="BasementSize" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsFreeStanding" /> @Html.DisplayNameFor(model => model.IsFreeStanding)
-                </label>
-            </div>
-            <div class="form-group">
-                <label asp-for="LotSize" class="control-label"></label>
-                <input asp-for="LotSize" class="form-control" />
-                <span asp-validation-for="LotSize" class="text-danger"></span>
-            </div>
             <div class="form-group">
                 <label asp-for="Address" class="control-label"></label>
                 <input asp-for="Address" class="form-control" />
@@ -66,36 +51,6 @@
                 <label asp-for="FloorSize" class="control-label"></label>
                 <input asp-for="FloorSize" class="form-control" />
                 <span asp-validation-for="FloorSize" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CoveredDriveway" class="control-label"></label>
-                <input asp-for="CoveredDriveway" class="form-control" />
-                <span asp-validation-for="CoveredDriveway" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="UncoveredDriveway" class="control-label"></label>
-                <input asp-for="UncoveredDriveway" class="form-control" />
-                <span asp-validation-for="UncoveredDriveway" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CoveredLot" class="control-label"></label>
-                <input asp-for="CoveredLot" class="form-control" />
-                <span asp-validation-for="CoveredLot" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="UncoveredLot" class="control-label"></label>
-                <input asp-for="UncoveredLot" class="form-control" />
-                <span asp-validation-for="UncoveredLot" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Garage" class="control-label"></label>
-                <input asp-for="Garage" class="form-control" />
-                <span asp-validation-for="Garage" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Street" class="control-label"></label>
-                <input asp-for="Street" class="form-control" />
-                <span asp-validation-for="Street" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

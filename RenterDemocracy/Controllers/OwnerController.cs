@@ -1,86 +1,141 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using NuGet.Versioning;
 using RenterDemocracy.Data;
 using RenterDemocracy.Models;
+using RenterDemocracy.Util;
+using System.Security.Claims;
 
 namespace RenterDemocracy.Controllers
 {
+    [Authorize(Roles = nameof(RolesEnum.OWNER))]
     public class OwnerController : Controller
     {
         private readonly ApplicationDbContext _context;
-        public OwnerController(ApplicationDbContext context)
+        private readonly UserManager<User> _userManager;
+
+        public OwnerController(ApplicationDbContext context, UserManager<User> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
+
         [HttpGet]
         public IActionResult Index()
         {
-            return View();
+            IList<Unit>? units = _context.Units.Include(u => u.UserUnits).ThenInclude(uu => uu.User).Where(u => u.Owner.Id == User.FindFirstValue(ClaimTypes.NameIdentifier)).ToList();
+            return View(units);
         }
+
         [HttpGet]
         public IActionResult AddApartment()
         {
-            return View();
+            return View(new Unit());
         }
         [HttpPost]
-        public IActionResult AddApartment(Apartment apartment)
+        public async Task<IActionResult> AddApartment(Unit apartment)
         {
+            apartment.UnitType = UnitType.APARTMENT;
+            apartment.Owner = await _userManager.FindByIdAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            _context.Units.Add(apartment);
+            _context.SaveChanges();
             return RedirectToAction("Index");
         }
+
         [HttpGet]
         public IActionResult AddHouse()
         {
-            return View();
+            return View(new Unit());
         }
+
         [HttpPost]
-        public IActionResult AddHouse(House house)
+        public async Task<IActionResult> AddHouse(Unit house)
         {
+            house.UnitType = UnitType.HOUSE;
+            house.UnitNumber = null;
+            house.Owner = await _userManager.FindByIdAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            _context.Units.Add(house);
+            _context.SaveChanges();
             return RedirectToAction("Index");
         }
+
         [HttpGet]
-        public IActionResult AddTenentToApartment(int Id)
+        public IActionResult AddTenant(string id)
         {
-            return View();
+            return View(_context.Units.Where(u => u.Id == id).FirstOrDefault());
         }
+
         [HttpPost]
-        public IActionResult AddTenentToApartment(User user, Apartment apartment)
+        public async Task<IActionResult> AddTenant(string unitId, string email)
         {
-            _context.UserUnits.Add(new UserUnit
+            User? user = await _userManager.FindByIdAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            if (user == null)
             {
-                UserId = user.Id,
-                UnitId = apartment.Id
-            });
-            return RedirectToAction("ApartmentDetails", apartment.Id);
-        }
-        [HttpGet]
-        [HttpPost]
-        public IActionResult AddTenent(User user, Apartment apartment)
-        {
+                return RedirectToAction("Index");
+            }
+            UnitUtil.AddTenantToUnit(email, unitId, _context, user);
             return RedirectToAction("Index");
         }
-        [HttpPost]
-        public IActionResult AddTenent(User user, House house)
-        {
-            return RedirectToAction("Index");
-        }
+
         [HttpGet]
-        public IActionResult ApartmentDetails(Apartment apartment)
+        public IActionResult EditApartment(string id)
         {
+            return View(_context.Units.FirstOrDefault(u => u.Id == id));
+        }
+        [HttpPost]
+        public IActionResult EditApartment(Unit apartment)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Entry(apartment).State = EntityState.Modified;
+                _context.SaveChanges();
+                return RedirectToAction("Index");
+            }
             return View(apartment);
         }
+
         [HttpGet]
-        public IActionResult EditApartment(int Id)
+        public IActionResult EditHouse(string id)
         {
-            return View(_context.Apartments.Find(Id));
+            return View(_context.Units.FirstOrDefault(u => u.Id == id));
         }
+
         [HttpPost]
-        public IActionResult EditApartment(Apartment apartment)
+        public IActionResult EditHouse(Unit house)
         {
-            _context.Apartments.Update(apartment);
+            if (ModelState.IsValid)
+            {
+                _context.Entry(house).State = EntityState.Modified;
+                _context.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            return View(house);
+        }
+
+        public async Task<IActionResult> DeleteTenant(string tenantId, string unitId)
+        {
+            Unit? unit = _context.Units.Include(u => u.UserUnits).ThenInclude(uu => uu.User).Where(u => u.Id == unitId).FirstOrDefault();
+            User tenant = await _userManager.FindByIdAsync(tenantId);
+            if (unit == null || tenant == null)
+            {
+                return RedirectToAction("Index");
+            }
+            UnitUtil.RemoveTenantFromUnit(tenant, unit, _userManager);
+            _context.SaveChanges();
             return RedirectToAction("Index");
         }
-        [HttpGet]
-        public IActionResult EditHouse(int Id) { 
-            return View(_context.Houses.Find(Id));
+
+        public IActionResult Delete(string id)
+        {
+            Unit? unit = _context.Units.FirstOrDefault(u => u.Id == id);
+            if (unit != null)
+            {
+                _context.Units.Remove(unit);
+                _context.SaveChanges();
+            }
+            return RedirectToAction("Index");
         }
     }
 }

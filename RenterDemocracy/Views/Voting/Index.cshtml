@@ -1,0 +1,102 @@
+﻿@model VotingIssueViewModel
+@using System.Security.Claims
+@{
+    ViewBag.Title = "Create issues and vote";
+}
+
+<table class="mb-5">
+    <tr><th class="fs-5">Open Voting Issues</th></tr>
+    <tr><td>Create new Voting Issue:</td></tr>
+    <tr><td><form asp-action="CreateVotingIssue"><input type="text" name="title" placeholder="Voting Issue Title" /><br /><textarea rows="5" cols="50" name="content" placeholder="Voting Issue Content..."></textarea><br /><button class="btn btn-primary">Create Voting Issue</button></form></td></tr>
+</table>
+<table class="w-75 border-top mx-auto">
+    <tr>
+        <th class="w-50 align-top">
+            <table class="w-100">
+                <tr><th>Open Voting Issues</th></tr>
+                @foreach (VotingIssue votingIssue in Model.OpenVotingIssues)
+                {
+                    <tr>
+                        <td>
+                            <table class="table table-bordered">
+                                <caption class="border-bottom">Authored by: @votingIssue.User.Email on @votingIssue.Time.ToString()</caption>
+                                <tr><th>@votingIssue.Title</th></tr>
+                                <tr><td style="font-size: 1.5rem">@votingIssue.Content</td></tr>
+                                <tr><td><br /><form asp-action="ReplyToVotingIssue"><input type="hidden" value="@votingIssue.Id" name="votingIssueId" /><textarea cols="50" rows="1" name="content" placeholder="Comment content..."></textarea><br /><button class="btn btn-primary">Reply to Voting Issue</button></form></td></tr>
+                                <tr><td class="border-bottom">Comments:</td></tr>
+
+                                @foreach (Comment comment in votingIssue.Comments)
+                                {
+                                    <tr>
+                                        <td>
+                                            <table style="width: 95%; margin-left: 10px;">
+                                                <caption class="border-bottom">@comment.Time.ToString()</caption>
+                                                <tr>
+                                                    <th>
+                                                        @comment.User.Email:
+                                                        @if (comment.User.Id == User.FindFirstValue(ClaimTypes.NameIdentifier))
+                                                        {
+                                                            <form class="d-inline float-end" asp-action="DeleteComment" asp-route-id="@comment.Id"><button class="btn btn-close" /></form>
+                                                        }
+                                                    </th>
+                                                </tr>
+                                                <tr><td><p>@comment.Content</p></td></tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                }
+                                <tr>
+                                    <td>
+                                        <span class="fw-bold">Vote:</span><br />
+                                        <form asp-action="Vote" asp-route-id="@votingIssue.Id" asp-route-vote="@Votes.YAY"><button class="btn btn-success w-100 my-1">YAY</button></form>
+                                        <form asp-action="Vote" asp-route-id="@votingIssue.Id" asp-route-vote="@Votes.NAY"><button class="btn btn-danger w-100 my-1">NAY</button></form>
+                                        <form asp-action="Vote" asp-route-id="@votingIssue.Id" asp-route-vote="@Votes.PRESENT"><button class="btn btn-primary w-100 my-1">PRESENT</button></form>
+                                        <form asp-action="Vote" asp-route-id="@votingIssue.Id" asp-route-vote="@Votes.ABSENT"><button class="btn btn-warning w-100 my-1">ABSENT</button></form>
+                                        <form asp-action="Vote" asp-route-id="@votingIssue.Id" asp-route-vote="@Votes.NOT_VOTING"><button class="btn btn-warning w-100 my-1">NOT VOTING</button></form>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                }
+            </table>
+        </th>
+        <th class="w-50 align-top">
+            <table class="w-100">
+                <tr><th>Completed Voting Issues</th></tr>
+                @foreach (VotingIssue votingIssue in Model.CompletedVotingIssues)
+                {
+                    <tr>
+                        <td>
+                            <table class="table table-bordered">
+                                <caption class="border-bottom">Authored by: @votingIssue.User.Email on @votingIssue.Time.ToString()</caption>
+                                <tr><th>@votingIssue.Title<br />Outcome: @votingIssue.GetOutcome()</th></tr>
+                                <tr><td style="font-size: 1.5rem">@votingIssue.Content</td></tr>
+                                <tr><td class="border-bottom">Comments:</td></tr>
+                                @{
+                                    int commentCount = 1;
+                                }
+                                @foreach (Comment comment in votingIssue.Comments)
+                                {
+                                    <tr>
+                                        <td>
+                                            <table style="margin-left: 10px;">
+                                                <caption class="border-bottom">Commented by: @comment.User.Email on @comment.Time.ToString()</caption>
+                                                <tr><th>Comment @commentCount of @votingIssue.Comments.Count</th></tr>
+                                                @{
+                                                    commentCount++;
+                                                }
+                                                <tr><td>@comment.Content</td></tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                }
+                            </table>
+                        </td>
+                    </tr>
+                }
+            </table>
+        </th>
+    </tr>
+</table>
+

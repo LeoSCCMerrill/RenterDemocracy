@@ -2,23 +2,27 @@
 {
     public class VotingIssue : Post
     {
-        public IList<VotingIssueVotes> VoteList {get; set;} = new List<VotingIssueVotes>();
-        public bool getOutcome()
+        public IList<VotingIssueVotes> VotingIssueVotes {get; set;} = new List<VotingIssueVotes>();
+        public IList<User> VotingUsers { get; set;} = new List<User>();
+        public bool Completed { get; set; } = false;
+        public string GetOutcome()
         {
-            int yay = 0, nay = 0, present = 0, notVoting = 0, total = 0;
-            foreach (var item in VoteList)
+            int yay = 0, nay = 0,total = 0;
+            foreach (VotingIssueVotes votingIssueVotes in VotingIssueVotes)
             {
-                switch (item.Vote)
+                switch (votingIssueVotes.Vote)
                 {
-                    case Votes.YAY: yay++; break;
-                    case Votes.NAY: nay++; break;
-                    case Votes.PRESENT: present++; break;
-                    case Votes.ABSTAIN: case Votes.ABSENT: notVoting++; break;
+                    case Votes.YAY: yay++; total++; break;
+                    case Votes.NAY: nay++; total++; break;
+                    case Votes.PRESENT: total++; break;
                 }
-                total++;
             }
-            total -= notVoting;
-            return yay > total / 2;
+
+            if(yay > total / 2)
+            {
+                return "Passed";
+            }
+            return "Failed";
         }
 
     }

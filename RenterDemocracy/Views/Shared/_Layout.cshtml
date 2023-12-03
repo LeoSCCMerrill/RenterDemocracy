@@ -1,9 +1,12 @@
 ﻿@using Microsoft.AspNetCore.Identity
+@using RenterDemocracy.Data
+@using System.Security.Claims;
 
 @inject SignInManager<User> SignInManager
 @inject UserManager<User> UserManager
+@inject ApplicationDbContext Context
 <!DOCTYPE html>
-<html lang="en" class="bg-dark">
+<html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -14,7 +17,7 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow" style="margin-bottom: 2px; padding-bottom: 2px;">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm border-bottom box-shadow" style="margin-bottom: 2px; padding-bottom: 2px;">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">RenterDemocracy</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -29,22 +32,39 @@
                         @if (User.IsInRole(RolesEnum.OWNER.ToString()))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-light" asp-area="" asp-controller="Owner" asp-action="Index">Manage Properties</a>
+                                <a class="nav-link" asp-area="" asp-controller="Owner" asp-action="Index">Manage Properties</a>
                             </li>
                         }
                         @if (User.IsInRole(RolesEnum.HOUSE_MEMBER.ToString()))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-light" asp-area="" asp-controller="Post" asp-action="Index">Unit Discussion</a>
+                                <a class="nav-link" asp-area="" asp-controller="Post" asp-action="Index">Unit Discussion</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-light" asp-area="" asp-controller="Unit" asp-action="Index">Unit Management</a>
+                                <a class="nav-link" asp-area="" asp-controller="Voting" asp-action="Index">Unit Voting</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Unit" asp-action="Index">Unit Management</a>
                             </li>
                         }
                         @if (SignInManager.IsSignedIn(User))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-light" asp-area="" asp-controller="User" asp-action="Index">User Management</a>
+                                <a class="nav-link" asp-area="" asp-controller="User" asp-action="Index">User Management</a>
+                            </li>
+                            User user = await UserManager.FindByIdAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
+                            Invite? invite = Context.Invites.FirstOrDefault(i => i.ToUserEmail == user.Email);
+                            @if (invite != null)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link alert" asp-area="" asp-controller="Invite" asp-action="Index">View New Invite</a>
+                                </li>
+                            }
+                        }
+                        @if (User.IsInRole(RolesEnum.ADMINISTRATOR.ToString()))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Admin" asp-action="Index">Account Management</a>
                             </li>
                         }
                     </ul>
@@ -53,14 +73,14 @@
             </div>
         </nav>
     </header>
-    <div class="bg-dark">
+    <div class="mx-4 my-2">
         <main role="main">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted bg-dark">
-        <div class="container text-light">
+    <footer class="border-top footer text-muted">
+        <div class="container">
             &copy; 2023 - RenterDemocracy - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>

@@ -1,4 +1,32 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@model UnitGovernment
+﻿@model Unit
+
+@{
+    ViewData["Title"] = "Unit Management";
+}
+
+<h3>Unit Information: </h3>
+<table>
+    <tr><td>Full Address: @Model.GetFullAddress()</td></tr>
+    <tr><td>@Model.GetBedBath()</td></tr>
+    <tr>
+        <td>
+            <table>
+                <thead><tr><th>Tenant Email</th><th>Tenant Name</th></tr></thead>
+                <tbody>
+                    @foreach (User tenant in Model.Users)
+                    {
+                        <tr><td>@tenant.Email</td><td>@tenant.GetFullName()</td></tr>
+                    }
+                </tbody>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a asp-action="LeaveUnit" asp-route-id="@Model.Id">Leave Unit</a>
+            <a asp-action="AddTenant" asp-route-id="@Model.Id">Invite New Tenant</a>
+        </td>
+    </tr>
+</table>
+
+

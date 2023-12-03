@@ -39,9 +39,6 @@ namespace RenterDemocracy.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedName")
@@ -49,57 +46,27 @@ namespace RenterDemocracy.Migrations
                         .HasDatabaseName("RoleNameIndex")
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
-                    b.HasIndex("UserId");
-
                     b.ToTable("AspNetRoles", (string)null);
 
                     b.HasData(
                         new
                         {
                             Id = "c42e3622-2385-4f71-83ba-9df25e51cb34",
-                            ConcurrencyStamp = "63fa62b2-bd23-47f9-9f83-d6eda329eab0",
+                            ConcurrencyStamp = "4c119b97-36f5-4e05-bb80-572009bec1ff",
                             Name = "OWNER",
                             NormalizedName = "OWNER"
                         },
                         new
                         {
-                            Id = "92d96b45-16af-4461-8c3e-76821fa3f56b",
-                            ConcurrencyStamp = "13b09c02-380a-4e07-a677-a0e63e86e24f",
-                            Name = "PROPERTY_MANAGER",
-                            NormalizedName = "PROPERTY_MANAGER"
-                        },
-                        new
-                        {
                             Id = "680889e4-52bd-40e3-96bb-db110032a501",
-                            ConcurrencyStamp = "82635249-1b91-4909-be2b-77935e2cb63a",
+                            ConcurrencyStamp = "0176ddce-cce7-4cff-9875-dcff5ee6cf6e",
                             Name = "ADMINISTRATOR",
                             NormalizedName = "ADMINISTRATOR"
                         },
                         new
                         {
-                            Id = "942ea005-0383-4dc7-b2af-2f9d8fb59376",
-                            ConcurrencyStamp = "395fa438-d058-45dc-a5ba-c4be99178653",
-                            Name = "EXECUTIVE",
-                            NormalizedName = "EXECUTIVE"
-                        },
-                        new
-                        {
-                            Id = "83edd07a-2018-4309-a8a1-5d2c23e61f84",
-                            ConcurrencyStamp = "87104a41-a028-47fe-b68a-8fae4b22e556",
-                            Name = "LEGISLATOR_CHAIR",
-                            NormalizedName = "LEGISLATOR_CHAIR"
-                        },
-                        new
-                        {
-                            Id = "b8b6ed3c-8c6a-443b-95c7-52d11bbe8129",
-                            ConcurrencyStamp = "11d85eb4-2073-44d3-a44c-5ad0ee2ca2de",
-                            Name = "LEGISLATOR_MEMBER",
-                            NormalizedName = "LEGISLATOR_MEMBER"
-                        },
-                        new
-                        {
                             Id = "9f1c7977-4d6d-457d-9e42-4a1c0fdfbba9",
-                            ConcurrencyStamp = "83a2c03c-80c5-45d6-9c10-18d684ebc93b",
+                            ConcurrencyStamp = "2f3bb060-e29b-4e0e-a724-787a486b6e0b",
                             Name = "HOUSE_MEMBER",
                             NormalizedName = "HOUSE_MEMBER"
                         });
@@ -203,31 +170,6 @@ namespace RenterDemocracy.Migrations
                         {
                             UserId = "dc4ba651-0a2e-4d5b-8ae0-9f37fed328b6",
                             RoleId = "680889e4-52bd-40e3-96bb-db110032a501"
-                        },
-                        new
-                        {
-                            UserId = "8acb6e32-4bff-407f-9842-b477c54ecfed",
-                            RoleId = "92d96b45-16af-4461-8c3e-76821fa3f56b"
-                        },
-                        new
-                        {
-                            UserId = "b4280b6a-0613-4cbd-a9e6-f1701e926e73",
-                            RoleId = "942ea005-0383-4dc7-b2af-2f9d8fb59376"
-                        },
-                        new
-                        {
-                            UserId = "22d6208e-e968-487e-a8f6-59a1c3ce94d7",
-                            RoleId = "83edd07a-2018-4309-a8a1-5d2c23e61f84"
-                        },
-                        new
-                        {
-                            UserId = "092586f9-483d-4085-9b17-829c5caccd91",
-                            RoleId = "b8b6ed3c-8c6a-443b-95c7-52d11bbe8129"
-                        },
-                        new
-                        {
-                            UserId = "77529ac5-5363-45eb-8aa3-66e3ed9d7744",
-                            RoleId = "9f1c7977-4d6d-457d-9e42-4a1c0fdfbba9"
                         });
                 });
 
@@ -254,11 +196,8 @@ namespace RenterDemocracy.Migrations
 
             modelBuilder.Entity("RenterDemocracy.Models.Comment", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Content")
                         .IsRequired()
@@ -267,8 +206,8 @@ namespace RenterDemocracy.Migrations
                     b.Property<string>("PostId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int?>("ReplyId")
-                        .HasColumnType("int");
+                    b.Property<DateTime>("Time")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -278,43 +217,34 @@ namespace RenterDemocracy.Migrations
 
                     b.HasIndex("PostId");
 
-                    b.HasIndex("ReplyId");
-
                     b.HasIndex("UserId");
 
                     b.ToTable("Comments");
                 });
 
-            modelBuilder.Entity("RenterDemocracy.Models.Owner", b =>
+            modelBuilder.Entity("RenterDemocracy.Models.Invite", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("City")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("State")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserId")
+                    b.Property<string>("FromUserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Zip")
+                    b.Property<string>("ToUnitId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ToUserEmail")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("FromUserId");
 
-                    b.ToTable("Owners");
+                    b.HasIndex("ToUnitId");
+
+                    b.ToTable("Invites");
                 });
 
             modelBuilder.Entity("RenterDemocracy.Models.Post", b =>
@@ -355,21 +285,6 @@ namespace RenterDemocracy.Migrations
                     b.HasDiscriminator<string>("Discriminator").HasValue("Post");
                 });
 
-            modelBuilder.Entity("RenterDemocracy.Models.RoomInviteCode", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("UnitId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UnitId");
-
-                    b.ToTable("RoomInviteCodes");
-                });
-
             modelBuilder.Entity("RenterDemocracy.Models.Unit", b =>
                 {
                     b.Property<string>("Id")
@@ -389,20 +304,7 @@ namespace RenterDemocracy.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("CoveredDriveway")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CoveredLot")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("FloorSize")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("Garage")
+                    b.Property<int>("FloorSize")
                         .HasColumnType("int");
 
                     b.Property<decimal>("Levels")
@@ -416,13 +318,10 @@ namespace RenterDemocracy.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Street")
-                        .HasColumnType("int");
+                    b.Property<string>("UnitNumber")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UncoveredDriveway")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UncoveredLot")
+                    b.Property<int>("UnitType")
                         .HasColumnType("int");
 
                     b.Property<string>("Zip")
@@ -433,31 +332,7 @@ namespace RenterDemocracy.Migrations
 
                     b.HasIndex("OwnerId");
 
-                    b.ToTable("Unit");
-
-                    b.HasDiscriminator<string>("Discriminator").HasValue("Unit");
-                });
-
-            modelBuilder.Entity("RenterDemocracy.Models.UnitParking", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("ParkingType")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Spaces")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UnitId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UnitId");
-
-                    b.ToTable("UnitParkings");
+                    b.ToTable("Units");
                 });
 
             modelBuilder.Entity("RenterDemocracy.Models.User", b =>
@@ -561,25 +436,6 @@ namespace RenterDemocracy.Migrations
                         },
                         new
                         {
-                            Id = "8acb6e32-4bff-407f-9842-b477c54ecfed",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "c8554266-b401-4519-9aeb-a9283053fc58",
-                            Email = "manager@email.com",
-                            EmailConfirmed = true,
-                            FirstName = "",
-                            LastName = "",
-                            LockoutEnabled = false,
-                            MiddleName = "",
-                            NormalizedEmail = "MANAGER@EMAIL.COM",
-                            NormalizedUserName = "MANAGER@EMAIL.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEALfXOO0MYDpnaWi+2TO6u67hE3xzrew03QVb8Vb3wTOdiKZzWGSm42SscHBRPRT0g==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "VVPCRDAS3MJWQD5CSW2GWPRADBXEZINA",
-                            TwoFactorEnabled = false,
-                            UserName = "manager@email.com"
-                        },
-                        new
-                        {
                             Id = "dc4ba651-0a2e-4d5b-8ae0-9f37fed328b6",
                             AccessFailedCount = 0,
                             ConcurrencyStamp = "1",
@@ -599,79 +455,98 @@ namespace RenterDemocracy.Migrations
                         },
                         new
                         {
-                            Id = "b4280b6a-0613-4cbd-a9e6-f1701e926e73",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "c8554266-b401-4519-9aeb-a9283053fc58",
-                            Email = "exec@email.com",
-                            EmailConfirmed = true,
-                            FirstName = "",
-                            LastName = "",
-                            LockoutEnabled = false,
-                            MiddleName = "",
-                            NormalizedEmail = "EXEC@EMAIL.COM",
-                            NormalizedUserName = "EXEC@EMAIL.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEALfXOO0MYDpnaWi+2TO6u67hE3xzrew03QVb8Vb3wTOdiKZzWGSm42SscHBRPRT0g==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "VVPCRDAS3MJWQD5CSW2GWPRADBXEZINA",
-                            TwoFactorEnabled = false,
-                            UserName = "exec@email.com"
-                        },
-                        new
-                        {
-                            Id = "22d6208e-e968-487e-a8f6-59a1c3ce94d7",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "c8554266-b401-4519-9aeb-a9283053fc58",
-                            Email = "chair@email.com",
-                            EmailConfirmed = true,
-                            FirstName = "",
-                            LastName = "",
-                            LockoutEnabled = false,
-                            MiddleName = "",
-                            NormalizedEmail = "CHAIR@EMAIL.COM",
-                            NormalizedUserName = "chair@EMAIL.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEALfXOO0MYDpnaWi+2TO6u67hE3xzrew03QVb8Vb3wTOdiKZzWGSm42SscHBRPRT0g==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "VVPCRDAS3MJWQD5CSW2GWPRADBXEZINA",
-                            TwoFactorEnabled = false,
-                            UserName = "chair@email.com"
-                        },
-                        new
-                        {
-                            Id = "092586f9-483d-4085-9b17-829c5caccd91",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "c8554266-b401-4519-9aeb-a9283053fc58",
-                            Email = "legislator@email.com",
-                            EmailConfirmed = true,
-                            FirstName = "",
-                            LastName = "",
-                            LockoutEnabled = false,
-                            MiddleName = "",
-                            NormalizedEmail = "LEGISLATOR@EMAIL.COM",
-                            NormalizedUserName = "LEGISLATOR@EMAIL.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEALfXOO0MYDpnaWi+2TO6u67hE3xzrew03QVb8Vb3wTOdiKZzWGSm42SscHBRPRT0g==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "VVPCRDAS3MJWQD5CSW2GWPRADBXEZINA",
-                            TwoFactorEnabled = false,
-                            UserName = "legislator@email.com"
-                        },
-                        new
-                        {
                             Id = "77529ac5-5363-45eb-8aa3-66e3ed9d7744",
                             AccessFailedCount = 0,
                             ConcurrencyStamp = "c8554266-b401-4519-9aeb-a9283053fc58",
-                            Email = "housemember@email.com",
+                            Email = "user1@email.com",
                             EmailConfirmed = true,
                             FirstName = "",
                             LastName = "",
                             LockoutEnabled = false,
                             MiddleName = "",
-                            NormalizedEmail = "HOUSEMEMBER@EMAIL.COM",
-                            NormalizedUserName = "HOUSEMEMBER@EMAIL.COM",
+                            NormalizedEmail = "USER1@EMAIL.COM",
+                            NormalizedUserName = "USER1@EMAIL.COM",
                             PasswordHash = "AQAAAAEAACcQAAAAEALfXOO0MYDpnaWi+2TO6u67hE3xzrew03QVb8Vb3wTOdiKZzWGSm42SscHBRPRT0g==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "VVPCRDAS3MJWQD5CSW2GWPRADBXEZINA",
                             TwoFactorEnabled = false,
-                            UserName = "housemember@email.com"
+                            UserName = "user1@email.com"
+                        },
+                        new
+                        {
+                            Id = "f0eea591-7de0-4c86-8225-4f17e2423623",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "c8554266-b401-4519-9aeb-a9283053fc58",
+                            Email = "user2@email.com",
+                            EmailConfirmed = true,
+                            FirstName = "",
+                            LastName = "",
+                            LockoutEnabled = false,
+                            MiddleName = "",
+                            NormalizedEmail = "USER2@EMAIL.COM",
+                            NormalizedUserName = "USER2@EMAIL.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEALfXOO0MYDpnaWi+2TO6u67hE3xzrew03QVb8Vb3wTOdiKZzWGSm42SscHBRPRT0g==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "VVPCRDAS3MJWQD5CSW2GWPRADBXEZINA",
+                            TwoFactorEnabled = false,
+                            UserName = "user2@email.com"
+                        },
+                        new
+                        {
+                            Id = "d784ce2e-9e7c-4187-98b4-a1eb9e29ebed",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "c8554266-b401-4519-9aeb-a9283053fc58",
+                            Email = "user3@email.com",
+                            EmailConfirmed = true,
+                            FirstName = "",
+                            LastName = "",
+                            LockoutEnabled = false,
+                            MiddleName = "",
+                            NormalizedEmail = "USER3@EMAIL.COM",
+                            NormalizedUserName = "USER3@EMAIL.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEALfXOO0MYDpnaWi+2TO6u67hE3xzrew03QVb8Vb3wTOdiKZzWGSm42SscHBRPRT0g==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "VVPCRDAS3MJWQD5CSW2GWPRADBXEZINA",
+                            TwoFactorEnabled = false,
+                            UserName = "user3@email.com"
+                        },
+                        new
+                        {
+                            Id = "9649f0a0-bda2-4858-816a-46e673e066c0",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "c8554266-b401-4519-9aeb-a9283053fc58",
+                            Email = "user4@email.com",
+                            EmailConfirmed = true,
+                            FirstName = "",
+                            LastName = "",
+                            LockoutEnabled = false,
+                            MiddleName = "",
+                            NormalizedEmail = "USER4@EMAIL.COM",
+                            NormalizedUserName = "USER4@EMAIL.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEALfXOO0MYDpnaWi+2TO6u67hE3xzrew03QVb8Vb3wTOdiKZzWGSm42SscHBRPRT0g==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "VVPCRDAS3MJWQD5CSW2GWPRADBXEZINA",
+                            TwoFactorEnabled = false,
+                            UserName = "user4@email.com"
+                        },
+                        new
+                        {
+                            Id = "390aaa17-f40c-4c50-b7ab-1688a8c8f0e7",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "c8554266-b401-4519-9aeb-a9283053fc58",
+                            Email = "user5@email.com",
+                            EmailConfirmed = true,
+                            FirstName = "",
+                            LastName = "",
+                            LockoutEnabled = false,
+                            MiddleName = "",
+                            NormalizedEmail = "USER5@EMAIL.COM",
+                            NormalizedUserName = "USER5@EMAIL.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEALfXOO0MYDpnaWi+2TO6u67hE3xzrew03QVb8Vb3wTOdiKZzWGSm42SscHBRPRT0g==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "VVPCRDAS3MJWQD5CSW2GWPRADBXEZINA",
+                            TwoFactorEnabled = false,
+                            UserName = "user5@email.com"
                         });
                 });
 
@@ -683,13 +558,7 @@ namespace RenterDemocracy.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("RoleId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("UnitId", "UserId");
-
-                    b.HasIndex("RoleId");
 
                     b.HasIndex("UserId");
 
@@ -698,90 +567,30 @@ namespace RenterDemocracy.Migrations
 
             modelBuilder.Entity("RenterDemocracy.Models.VotingIssueVotes", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<string>("VotingIssueId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("PostId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("Vote")
                         .HasColumnType("int");
 
-                    b.Property<string>("VotingIssueId")
-                        .HasColumnType("nvarchar(450)");
+                    b.HasKey("VotingIssueId", "UserId");
 
-                    b.HasKey("Id");
-
-                    b.HasIndex("VotingIssueId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("VotingIssuesVotes");
-                });
-
-            modelBuilder.Entity("RenterDemocracy.Models.Apartment", b =>
-                {
-                    b.HasBaseType("RenterDemocracy.Models.Unit");
-
-                    b.Property<string>("Floor")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("RoomNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasDiscriminator().HasValue("Apartment");
-                });
-
-            modelBuilder.Entity("RenterDemocracy.Models.DirectMessage", b =>
-                {
-                    b.HasBaseType("RenterDemocracy.Models.Post");
-
-                    b.Property<string>("ToUserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("UserId1")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasIndex("ToUserId");
-
-                    b.HasIndex("UserId1");
-
-                    b.HasDiscriminator().HasValue("DirectMessage");
-                });
-
-            modelBuilder.Entity("RenterDemocracy.Models.House", b =>
-                {
-                    b.HasBaseType("RenterDemocracy.Models.Unit");
-
-                    b.Property<decimal>("BasementSize")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<bool>("IsFreeStanding")
-                        .HasColumnType("bit");
-
-                    b.Property<decimal>("LotSize")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasDiscriminator().HasValue("House");
                 });
 
             modelBuilder.Entity("RenterDemocracy.Models.VotingIssue", b =>
                 {
                     b.HasBaseType("RenterDemocracy.Models.Post");
 
-                    b.HasDiscriminator().HasValue("VotingIssue");
-                });
+                    b.Property<bool>("Completed")
+                        .HasColumnType("bit");
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
-                {
-                    b.HasOne("RenterDemocracy.Models.User", null)
-                        .WithMany("Roles")
-                        .HasForeignKey("UserId");
+                    b.HasDiscriminator().HasValue("VotingIssue");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -841,10 +650,6 @@ namespace RenterDemocracy.Migrations
                         .WithMany("Comments")
                         .HasForeignKey("PostId");
 
-                    b.HasOne("RenterDemocracy.Models.Comment", "Reply")
-                        .WithMany()
-                        .HasForeignKey("ReplyId");
-
                     b.HasOne("RenterDemocracy.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
@@ -853,20 +658,24 @@ namespace RenterDemocracy.Migrations
 
                     b.Navigation("Post");
 
-                    b.Navigation("Reply");
-
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("RenterDemocracy.Models.Owner", b =>
+            modelBuilder.Entity("RenterDemocracy.Models.Invite", b =>
                 {
-                    b.HasOne("RenterDemocracy.Models.User", "PropertyManager")
+                    b.HasOne("RenterDemocracy.Models.User", "FromUser")
                         .WithMany()
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("FromUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("PropertyManager");
+                    b.HasOne("RenterDemocracy.Models.Unit", "ToUnit")
+                        .WithMany()
+                        .HasForeignKey("ToUnitId");
+
+                    b.Navigation("FromUser");
+
+                    b.Navigation("ToUnit");
                 });
 
             modelBuilder.Entity("RenterDemocracy.Models.Post", b =>
@@ -886,19 +695,10 @@ namespace RenterDemocracy.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("RenterDemocracy.Models.RoomInviteCode", b =>
-                {
-                    b.HasOne("RenterDemocracy.Models.Unit", "Unit")
-                        .WithMany()
-                        .HasForeignKey("UnitId");
-
-                    b.Navigation("Unit");
-                });
-
             modelBuilder.Entity("RenterDemocracy.Models.Unit", b =>
                 {
-                    b.HasOne("RenterDemocracy.Models.Owner", "Owner")
-                        .WithMany()
+                    b.HasOne("RenterDemocracy.Models.User", "Owner")
+                        .WithMany("OwnedUnits")
                         .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -906,25 +706,8 @@ namespace RenterDemocracy.Migrations
                     b.Navigation("Owner");
                 });
 
-            modelBuilder.Entity("RenterDemocracy.Models.UnitParking", b =>
-                {
-                    b.HasOne("RenterDemocracy.Models.Unit", "Unit")
-                        .WithMany()
-                        .HasForeignKey("UnitId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Unit");
-                });
-
             modelBuilder.Entity("RenterDemocracy.Models.UserUnit", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", "Role")
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("RenterDemocracy.Models.Unit", "Unit")
                         .WithMany("UserUnits")
                         .HasForeignKey("UnitId")
@@ -937,8 +720,6 @@ namespace RenterDemocracy.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Role");
-
                     b.Navigation("Unit");
 
                     b.Navigation("User");
@@ -946,23 +727,21 @@ namespace RenterDemocracy.Migrations
 
             modelBuilder.Entity("RenterDemocracy.Models.VotingIssueVotes", b =>
                 {
-                    b.HasOne("RenterDemocracy.Models.VotingIssue", null)
-                        .WithMany("VoteList")
-                        .HasForeignKey("VotingIssueId");
-                });
+                    b.HasOne("RenterDemocracy.Models.User", "User")
+                        .WithMany("VotingIssueVotes")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-            modelBuilder.Entity("RenterDemocracy.Models.DirectMessage", b =>
-                {
-                    b.HasOne("RenterDemocracy.Models.User", "ToUser")
-                        .WithMany("DirectMessagesReceived")
-                        .HasForeignKey("ToUserId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                    b.HasOne("RenterDemocracy.Models.VotingIssue", "VotingIssue")
+                        .WithMany("VotingIssueVotes")
+                        .HasForeignKey("VotingIssueId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
-                    b.HasOne("RenterDemocracy.Models.User", null)
-                        .WithMany("DirectMessagesAuthored")
-                        .HasForeignKey("UserId1");
+                    b.Navigation("User");
 
-                    b.Navigation("ToUser");
+                    b.Navigation("VotingIssue");
                 });
 
             modelBuilder.Entity("RenterDemocracy.Models.Post", b =>
@@ -977,20 +756,18 @@ namespace RenterDemocracy.Migrations
 
             modelBuilder.Entity("RenterDemocracy.Models.User", b =>
                 {
-                    b.Navigation("DirectMessagesAuthored");
-
-                    b.Navigation("DirectMessagesReceived");
+                    b.Navigation("OwnedUnits");
 
                     b.Navigation("PostsAuthored");
 
-                    b.Navigation("Roles");
-
                     b.Navigation("UserUnits");
+
+                    b.Navigation("VotingIssueVotes");
                 });
 
             modelBuilder.Entity("RenterDemocracy.Models.VotingIssue", b =>
                 {
-                    b.Navigation("VoteList");
+                    b.Navigation("VotingIssueVotes");
                 });
 #pragma warning restore 612, 618
         }
