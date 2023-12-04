@@ -1,4 +1,4 @@
-﻿namespace RenterDemocracy.Models
+﻿ namespace RenterDemocracy.Models
 {
     public class VotingIssueVotes
     {
