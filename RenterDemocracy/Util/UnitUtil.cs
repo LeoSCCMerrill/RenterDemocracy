@@ -10,16 +10,7 @@ namespace RenterDemocracy.Util
     {
         public async static void RemoveTenantFromUnit(User user, Unit unit, UserManager<User> _userManager)
         {
-            unit.Users.Remove(user);
-            user.Units.Remove(unit);
-            await _userManager.RemoveFromRoleAsync(user, RolesEnum.HOUSE_MEMBER.ToString());
-            foreach (UserUnit userUnit in unit.UserUnits)
-            {
-                if (userUnit.UserId == unit.Id)
-                {
-                    unit.UserUnits.Remove(userUnit);
-                }
-            }
+
         }
 
         public static bool AddTenantToUnit(string email, string unitId, ApplicationDbContext _context, User user)

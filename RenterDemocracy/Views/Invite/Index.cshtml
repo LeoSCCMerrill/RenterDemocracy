@@ -4,18 +4,25 @@
     ViewBag.Title = "Invite to New Unit";
 }
 
-<h1>Here's your invites</h1>
-<table>
-    <tr><th>Unit</th><th>User</th></tr>
-    <tr><td>@Model.ToUnit.GetFullAddress()</td><td>@Model.FromUser.Email</td></tr>
-    <tr>
-        <td colspan="2">
-            <form asp-action="AcceptInvite" asp-route-id="@Model.Id" asp-route-accepted="@true">
-                <button class="btn btn-primary">Accept</button>
-            </form>
-            <form asp-action="AcceptInvite" asp-route-id="@Model.Id" asp-route-accepted="@false">
-                <button class="btn btn-warning">Deny</button>
-            </form>
-        </td>
-    </tr>
-</table>
+@if (Model == null)
+{
+    <h1>You have no invites! Go back to home</h1>
+}
+else
+{
+    <h1>Here's your invites</h1>
+    <table>
+        <tr><th>Unit</th><th>User</th></tr>
+        <tr><td>@Model.ToUnit.GetFullAddress()</td><td>@Model.FromUser.Email</td></tr>
+        <tr>
+            <td colspan="2">
+                <form asp-action="AcceptInvite" asp-route-id="@Model.Id" asp-route-accepted="@true">
+                    <button class="btn btn-primary">Accept</button>
+                </form>
+                <form asp-action="AcceptInvite" asp-route-id="@Model.Id" asp-route-accepted="@false">
+                    <button class="btn btn-warning">Deny</button>
+                </form>
+            </td>
+        </tr>
+    </table>
+}

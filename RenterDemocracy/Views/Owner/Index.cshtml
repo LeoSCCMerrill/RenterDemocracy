@@ -51,7 +51,7 @@
                                 <tbody>
                                     @foreach (User tenant in house.Users)
                                     {
-                                        <tr><td>@tenant.Email</td><td>@tenant.GetFullName()</td><td><button class="btn btn-warning" asp-action="DeleteTenant" asp-route-tenantId="@tenant.Id" asp-route-unitId="@house.Id">Delete</button></td></tr>
+                                        <tr><td>@tenant.Email</td><td>@tenant.GetFullName()</td><td><form asp-action="DeleteTenant" asp-route-tenantId="@tenant.Id" asp-route-unitId="@house.Id"><button class="btn btn-danger">Delete</button></form></td></tr>
                                     }
                                 </tbody>
                             </table>

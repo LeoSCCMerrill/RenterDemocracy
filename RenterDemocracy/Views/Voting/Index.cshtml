@@ -45,16 +45,29 @@
                                         </td>
                                     </tr>
                                 }
-                                <tr>
-                                    <td>
-                                        <span class="fw-bold">Vote:</span><br />
-                                        <form asp-action="Vote" asp-route-id="@votingIssue.Id" asp-route-vote="@Votes.YAY"><button class="btn btn-success w-100 my-1">YAY</button></form>
-                                        <form asp-action="Vote" asp-route-id="@votingIssue.Id" asp-route-vote="@Votes.NAY"><button class="btn btn-danger w-100 my-1">NAY</button></form>
-                                        <form asp-action="Vote" asp-route-id="@votingIssue.Id" asp-route-vote="@Votes.PRESENT"><button class="btn btn-primary w-100 my-1">PRESENT</button></form>
-                                        <form asp-action="Vote" asp-route-id="@votingIssue.Id" asp-route-vote="@Votes.ABSENT"><button class="btn btn-warning w-100 my-1">ABSENT</button></form>
-                                        <form asp-action="Vote" asp-route-id="@votingIssue.Id" asp-route-vote="@Votes.NOT_VOTING"><button class="btn btn-warning w-100 my-1">NOT VOTING</button></form>
-                                    </td>
-                                </tr>
+                                @{
+                                    bool voted = false;
+                                }
+                                @foreach (VotingIssueVotes viv in votingIssue.VotingIssueVotes)
+                                {
+                                    if (viv.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier))
+                                    {
+                                        voted = true;
+                                    }
+                                }
+                                @if (!voted)
+                                {
+                                    <tr>
+                                        <td>
+                                            <span class="fw-bold">Vote:</span><br />
+                                            <form asp-action="Vote" asp-route-id="@votingIssue.Id" asp-route-vote="@Votes.YAY"><button class="btn btn-success w-100 my-1">YAY</button></form>
+                                            <form asp-action="Vote" asp-route-id="@votingIssue.Id" asp-route-vote="@Votes.NAY"><button class="btn btn-danger w-100 my-1">NAY</button></form>
+                                            <form asp-action="Vote" asp-route-id="@votingIssue.Id" asp-route-vote="@Votes.PRESENT"><button class="btn btn-primary w-100 my-1">PRESENT</button></form>
+                                            <form asp-action="Vote" asp-route-id="@votingIssue.Id" asp-route-vote="@Votes.ABSENT"><button class="btn btn-warning w-100 my-1">ABSENT</button></form>
+                                            <form asp-action="Vote" asp-route-id="@votingIssue.Id" asp-route-vote="@Votes.NOT_VOTING"><button class="btn btn-warning w-100 my-1">NOT VOTING</button></form>
+                                        </td>
+                                    </tr>
+                                }
                             </table>
                         </td>
                     </tr>

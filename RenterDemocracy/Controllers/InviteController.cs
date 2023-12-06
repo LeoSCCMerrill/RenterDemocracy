@@ -12,13 +12,15 @@ namespace RenterDemocracy.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly SignInManager<User> _signInManager;
         private readonly ApplicationDbContext _context;
         private readonly ILogger<InviteController> _logger;
 
-        public InviteController(UserManager<User> userManager, RoleManager<IdentityRole> roleManager, ApplicationDbContext context, ILogger<InviteController> logger)
+        public InviteController(UserManager<User> userManager, RoleManager<IdentityRole> roleManager, ApplicationDbContext context, ILogger<InviteController> logger, SignInManager<User> signInManager)
         {
             _userManager = userManager;
             _roleManager = roleManager;
+            _signInManager = signInManager;
             _context = context;
             _logger = logger;
         }
@@ -32,10 +34,6 @@ namespace RenterDemocracy.Controllers
                 return RedirectToAction("Index", "Home");
             }
             Invite? invite = _context.Invites.Include(i => i.ToUnit).Include(i => i.FromUser).FirstOrDefault(i => i.ToUserEmail == user.Email);
-            if (invite == null)
-            {
-                return RedirectToAction("Index", "Home");
-            }
             return View(invite);
         }
 
@@ -65,13 +63,15 @@ namespace RenterDemocracy.Controllers
                 await _userManager.AddToRoleAsync(user, RolesEnum.HOUSE_MEMBER.ToString());
                 _context.Invites.Remove(invite);
                 _context.SaveChanges();
+                await _signInManager.SignOutAsync();
+                await _signInManager.SignInAsync(user, isPersistent: false);
                 return RedirectToAction("Index", "Unit");
             }
             else
             {
                 _context.Invites.Remove(invite);
                 _context.SaveChanges();
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index");
             }
         }
     }

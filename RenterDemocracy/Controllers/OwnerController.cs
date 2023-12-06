@@ -105,13 +105,9 @@ namespace RenterDemocracy.Controllers
         [HttpPost]
         public IActionResult EditHouse(Unit house)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Entry(house).State = EntityState.Modified;
-                _context.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            return View(house);
+            _context.Entry(house).State = EntityState.Modified;
+            _context.SaveChanges();
+            return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> DeleteTenant(string tenantId, string unitId)
@@ -122,7 +118,16 @@ namespace RenterDemocracy.Controllers
             {
                 return RedirectToAction("Index");
             }
-            UnitUtil.RemoveTenantFromUnit(tenant, unit, _userManager);
+            unit.Users.Remove(tenant);
+            tenant.Units.Remove(unit);
+            await _userManager.RemoveFromRoleAsync(tenant, RolesEnum.HOUSE_MEMBER.ToString());
+            foreach (UserUnit userUnit in unit.UserUnits)
+            {
+                if (userUnit.UserId == unit.Id)
+                {
+                    unit.UserUnits.Remove(userUnit);
+                }
+            }
             _context.SaveChanges();
             return RedirectToAction("Index");
         }
